@@ -1,0 +1,13 @@
+{
+  "name": "bloodjewel-calculator",
+  "version": "1.0.0",
+  "description": "A helper app for playing around with bloodjewel combinations.",
+  "main": "index.js",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/gesslar/bloodjewel-calculator.git"
+  },
+  "author": "gesslar",
+  "license": "Unlicense",
+  "homepage": "https://github.com/gesslar/bloodjewel-calculator#readme"
+}
