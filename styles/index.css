@@ -18,7 +18,7 @@
 
   --border-color-primary: var(--color-orange);
 
-  --transition-time: 100s;
+  --transition-time: 600s;
   --transition-kind: ease-in-out;
   --transition-standard: var(--transition-kind) var(--transition-time)
 }
@@ -30,8 +30,8 @@ body {
   user-select: none;
 
   main {
-    width: 50vw;
-    margin: 0 10vw;
+    width: 50%;
+    margin: 0 auto;
     transition: border-radius var(--transition-standard), box-shadow var(--transition-standard);
     border-radius: 2rem;
     border: none;
@@ -107,25 +107,57 @@ body {
     text-align: center;
 
     #pasteBox {
-      box-shadow: 0px 0px 3px var(--border-color-primary) inset, 0px 0px 3px var(--border-color-primary);
-      border-radius: .5rem;
+      box-shadow: 0px 0px 1px var(--border-color-primary);
+      border: none;
+      display: block;
       width: 100%;
       max-height: 20ch;
+      /* padding: 0.75rem 1.25rem 0.75rem 0.75rem; */
+      /* border: 1px solid var(--border-color-primary); */
       overflow-y: scroll;
-      /* border-style: solid;
-      border-width: 1px;
-      border-color: transparent; */
-      /* border-color: var(--border-color-primary); */
       color: var(--fg-text);
       background-color: var(--background-secondary);
       font-family: var(--mono-font);
+      font-size: 0.95rem;
       margin-bottom: 1rem;
       height: max-content;
       text-decoration-style: none;
-      scrollbar-color: red;
-      scrollbar-gutter: blue;
-      scrollbar-highlight-color: green;
+      scrollbar-width: thin;
+      scrollbar-color: var(--border-color-primary) var(--background-secondary);
+      scrollbar-gutter: stable both-edges;
+      white-space: pre-wrap;
+      outline: none;
+      /* box-shadow: 0px 0px 3px var(--border-color-primary) inset, 0px 0px 3px var(--border-color-primary); */
+      /* border-radius: .5rem; */
     }
+
+    #pasteBox:focus {
+      box-shadow: 0px 0px 6px var(--border-color-primary) inset, 0px 0px 6px var(--border-color-primary);
+    }
+
+    /*
+    #pasteBox::-webkit-scrollbar {
+      width: 0.6rem;
+    }
+*/
+    /* #pasteBox::-webkit-scrollbar-track {
+      background: var(--background-secondary);
+      border-radius: .5rem;
+      margin: 0.25rem;
+    }
+     */
+    /*
+    #pasteBox::-webkit-scrollbar-thumb {
+      background: var(--border-color-primary);
+      border-radius: .5rem;
+      border: 3px solid var(--background-secondary);
+    }
+       */
+    /*
+    #pasteBox::-webkit-scrollbar-thumb:hover {
+      background: #ffbe33;
+    }
+      */
   }
 
 
