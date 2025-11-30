@@ -1,26 +1,63 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Bloodjewel Calculator</title>
-    <link rel="stylesheet" href="styles/index.css">
-    <script src="scripts/gems.js" defer></script>
-    <script src="scripts/index.js" defer></script>
-    <script src="scripts/calc.js" defer></script>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Bloodjewel Calculator</title>
+  <link rel="stylesheet" href="styles/index.css">
+  <script type="module" src="scripts/index.js" defer></script>
 </head>
+
 <body>
-    <div id="header">
-        <h1>Bloodjewel Calculator</h1>
+  <header>
+    <h1 class="title-blur" data-text="Bloodjewel Calculator">Bloodjewel Calculator</h1>
+  </header>
+
+  <main>
+    <div class="content-columns">
+      <div class="primary-column">
+        <div id="toolbar">
+          <span><button class="button" id="showPasteStage" paste>Paste Belt</button></span>
+          <span><button class="button" id="resetGems" paste>Reset</button></span>
+        </div>
+        <div id="gemStage" class="flex-container"></div>
+        <div id="debugStage"></div>
+      </div>
+      <aside id="outputStage" role="status" aria-live="polite" class="is-hidden"></aside>
     </div>
-    <div id="toolbar">
-        <span><button class="button" id="pastebutton" onclick='showpaste()'>📋 Paste Belt</button></span>
-        <span><button class="button" id="resetbutton" onclick='resetGems()'>✘ Reset</button></span>
-    </div>
-    <div id="paster"></div>
-    <div id="main"></div>
-    <div id="debug"></div>
-    <div id="output"></div>
+  </main>
+
+  <footer>
+  </footer>
 </body>
+
+<template id="pasteDialogTemplate">
+  <dialog id="pasteDialog" paste aria-modal="true" role="dialog">
+    <div class="dialog-body">
+      <div id="instructions">
+        <h2>Paste your gems here</h2>
+      </div>
+      <textarea id="pasteBox" spellcheck="false" placeholder="Paste belt gems, one per line" aria-label="Paste belt gems, one per line"></textarea>
+      <div class="dialog-actions">
+        <button class="button" id="pasteButton" paste aria-label="Confirm paste">Confirm Paste</button>
+        <button class="button" id="cancelpaste" paste aria-label="Cancel paste">Cancel</button>
+      </div>
+    </div>
+  </dialog>
+</template>
+
+<template id="gemTemplate">
+  <div>
+    <div class="gem-name label"></div>
+    <select class="select quality-select">
+      <option value="none">none</option>
+    </select>
+    <select class="select type-select">
+      <option value="none">none</option>
+    </select>
+  </div>
+</template>
+
 </html>
