@@ -1,0 +1,47 @@
+{
+  "name": "@gesslar/colours",
+  "version": "0.0.1",
+  "description": "256 colours for your terminal expressions. you're welcome.",
+  "author": "gesslar",
+  "publisher": "gesslar",
+  "type": "module",
+  "license": "Unlicense",
+  "main": "src/Colours.js",
+  "bin": "src/cli.js",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/gesslar/colours.git"
+  },
+  "keywords": [
+    "colours",
+    "256",
+    "curious",
+    "george",
+    "ansi",
+    "ascii",
+    "trifle",
+    "monkeynado"
+  ],
+  "bugs": {
+    "url": "https://github.com/gesslar/colours/issues"
+  },
+  "homepage": "https://github.com/gesslar/colours#readme",
+    "devDependencies": {
+    "@stylistic/eslint-plugin": "^5.2.3",
+    "@typescript-eslint/eslint-plugin": "^8.33.0",
+    "@typescript-eslint/parser": "^8.33.0",
+    "eslint": "^9.28.0",
+    "eslint-plugin-jsdoc": "^50.6.17"
+  },
+  "files": [
+    "src/",
+    "UNLICENSE.txt"
+  ],
+  "scripts": {
+    "test": "node test/test.js",
+    "test-colours": "node src/cli.js",
+    "clean": "rm -rfv ./dist",
+    "build": "npm run clean && mkdir -pv ./dist && npm pack --pack-destination ./dist/",
+    "submit": "npm publish --access public"
+  }
+}

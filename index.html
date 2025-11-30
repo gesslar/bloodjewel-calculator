@@ -1,26 +1,56 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Bloodjewel Calculator</title>
-    <link rel="stylesheet" href="styles/index.css">
-    <script src="scripts/gems.js" defer></script>
-    <script src="scripts/index.js" defer></script>
-    <script src="scripts/calc.js" defer></script>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Bloodjewel Calculator</title>
+  <link rel="stylesheet" href="styles/index.css">
+  <script type="module" src="scripts/index.js" defer></script>
 </head>
+
 <body>
-    <div id="header">
-        <h1>Bloodjewel Calculator</h1>
-    </div>
+  <header>
+    <h1>Bloodjewel Calculator</h1>
+  </header>
+
+  <main>
     <div id="toolbar">
-        <span><button class="button" id="pastebutton" onclick='showpaste()'>📋 Paste Belt</button></span>
-        <span><button class="button" id="resetbutton" onclick='resetGems()'>✘ Reset</button></span>
+      <span><button class="button" id="showPasteStage" paste>Paste Belt</button></span>
+      <span><button class="button" id="resetGems" paste>Reset</button></span>
+      <span><button class="button pastebutton hidden" id="pasteButton" paste>Confirm Paste</button></span>
+      <span><button class="button pastebutton hidden" id="cancelpaste" paste>Cancel Paste</button></span>
     </div>
-    <div id="paster"></div>
-    <div id="main"></div>
-    <div id="debug"></div>
-    <div id="output"></div>
+
+    <div id="pasteStage" class="hidden" paste>
+      <div id="instructions">
+        <h2>Paste your gems here</h2>
+      </div>
+      <div id="pasteBox" contenteditable>
+        <!-- <textarea id="pasteBox"></textarea> -->
+      </div>
+    </div>
+
+    <div id="gemStage" class="flex-container"></div>
+    <div id="debugStage"></div>
+    <div id="outputStage"></div>
+  </main>
+
+  <footer>
+  </footer>
 </body>
+
+<template id="gemTemplate">
+  <div>
+    <div class="gem-name label"></div>
+    <select class="select quality-select">
+      <option value="none">none</option>
+    </select>
+    <select class="select type-select">
+      <option value="none">none</option>
+    </select>
+  </div>
+</template>
+
 </html>

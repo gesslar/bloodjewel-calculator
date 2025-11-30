@@ -9,5 +9,12 @@
   },
   "author": "gesslar",
   "license": "Unlicense",
-  "homepage": "https://github.com/gesslar/bloodjewel-calculator#readme"
+  "homepage": "https://github.com/gesslar/bloodjewel-calculator#readme",
+  "devDependencies": {
+    "@gesslar/uglier": "^0.0.5",
+    "@stylistic/eslint-plugin": "^5.6.1",
+    "eslint": "^9.39.1",
+    "eslint-plugin-jsdoc": "^61.4.1",
+    "globals": "^16.5.0"
+  }
 }
