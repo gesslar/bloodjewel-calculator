@@ -16,30 +16,37 @@
   </header>
 
   <main>
-    <div id="toolbar">
-      <span><button class="button" id="showPasteStage" paste>Paste Belt</button></span>
-      <span><button class="button" id="resetGems" paste>Reset</button></span>
-      <span><button class="button pastebutton hidden" id="pasteButton" paste>Confirm Paste</button></span>
-      <span><button class="button pastebutton hidden" id="cancelpaste" paste>Cancel Paste</button></span>
-    </div>
-
-    <div id="pasteStage" class="hidden" paste>
-      <div id="instructions">
-        <h2>Paste your gems here</h2>
+    <div class="content-columns">
+      <div class="primary-column">
+        <div id="toolbar">
+          <span><button class="button" id="showPasteStage" paste>Paste Belt</button></span>
+          <span><button class="button" id="resetGems" paste>Reset</button></span>
+        </div>
+        <div id="gemStage" class="flex-container"></div>
+        <div id="debugStage"></div>
       </div>
-      <div>
-        <textarea id="pasteBox"></textarea>
-      </div>
+      <aside id="outputStage" role="status" aria-live="polite" class="is-hidden"></aside>
     </div>
-
-    <div id="gemStage" class="flex-container"></div>
-    <div id="debugStage"></div>
-    <div id="outputStage"></div>
   </main>
 
   <footer>
   </footer>
 </body>
+
+<template id="pasteDialogTemplate">
+  <dialog id="pasteDialog" paste aria-modal="true" role="dialog">
+    <div class="dialog-body">
+      <div id="instructions">
+        <h2>Paste your gems here</h2>
+      </div>
+      <textarea id="pasteBox" spellcheck="false" placeholder="Paste belt gems, one per line" aria-label="Paste belt gems, one per line"></textarea>
+      <div class="dialog-actions">
+        <button class="button" id="pasteButton" paste aria-label="Confirm paste">Confirm Paste</button>
+        <button class="button" id="cancelpaste" paste aria-label="Cancel paste">Cancel</button>
+      </div>
+    </div>
+  </dialog>
+</template>
 
 <template id="gemTemplate">
   <div>

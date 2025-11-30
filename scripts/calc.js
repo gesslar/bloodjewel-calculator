@@ -13,7 +13,7 @@ export default new class Calc {
   }
 
   get selects() {
-    return document.querySelectorAll("#selects")
+    return document.querySelectorAll("select")
   }
 
   #cooldown = false
@@ -28,6 +28,7 @@ export default new class Calc {
       this.#cooldown = false
       this.output.innerHTML = ""
       this.debug.innerHTML = ""
+      this.#toggleOutput(false)
 
       this.buildSelectedGems()
       this.generateEffects()
@@ -37,16 +38,16 @@ export default new class Calc {
     }, 50)
   }
 
-  resetGems() {
+  resetGems(evt) {
     this.#selectedGems.length = 0
     this.#effects = {}
 
     // iterate through all of the selects and reset them to the first option
-    for(const select of selects) {
+    for(const select of this.selects) {
       select.selectedIndex = 0
     }
 
-    gemUpdated()
+    this.gemUpdated()
   }
 
   buildSelectedGems() {
@@ -132,22 +133,54 @@ export default new class Calc {
   }
 
   floorValues() {
-    for(const label in gems.effects) {
-      effects[label].value = Math.floor(effects[label].value)
+    for(const label in this.#effects) {
+      this.#effects[label].value = Math.floor(this.#effects[label].value)
     }
 
   }
 
   printEffects() {
-    const labels = Object.keys(this.#effects)
+    const labels = Object.keys(this.#effects).sort()
+    const hasEffects = labels.some(label => this.#effects[label].value !== 0)
 
-    labels.sort()
+    if(!hasEffects) {
+      this.output.innerHTML = `<div class="effects-panel"><div class="effects-empty">No effects yet</div></div>`
+      this.#toggleOutput(false)
 
-    for(const label of labels) {
-      if(this.#effects[label].value === 0)
-        continue
+      return
+    }
 
-      this.output.innerHTML += `<div><span class="effect_label">${label}:</span> <span class="effect_value">${this.#effects[label].value}${this.#effects[label].notation}</span></div>`
+    const items = labels
+      .filter(label => this.#effects[label].value !== 0)
+      .map(label => {
+        const {value, notation} = this.#effects[label]
+
+        return `<li class="effect-item"><span class="effect-name">${label}</span><span class="effect-value">${value}${notation}</span></li>`
+      })
+      .join("")
+
+    this.output.innerHTML = `
+      <div class="effects-panel" aria-label="Calculated effects summary">
+        <div class="effects-title">Totals</div>
+        <ul class="effects-list">
+          ${items}
+        </ul>
+      </div>`
+    this.#toggleOutput(true)
+  }
+
+  #toggleOutput(show) {
+    const main = document.querySelector("main")
+    const output = this.output
+    if(!main || !output)
+      return
+
+    if(show) {
+      output.classList.remove("is-hidden")
+      main.classList.add("with-output")
+    } else {
+      output.classList.add("is-hidden")
+      main.classList.remove("with-output")
     }
   }
 }

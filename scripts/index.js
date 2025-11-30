@@ -9,48 +9,111 @@ const gemDisposer = new TK.DisposerClass()
 const notify = TK.Notify
 const calc = Calc
 
-const maxGems = 12
-
-console.log(disposer === gemDisposer)
+let maxGems = 12
+const dialogDisposer = new TK.DisposerClass()
+let activeDialog = null
+let lastTrigger = null
 
 disposer.register(notify.on("DOMContentLoaded", () => {
   const showPasteStageButton = document.querySelector("#showPasteStage")
   const resetGemsButton = document.querySelector("#resetGems")
 
-  const cancelPasteButton = document.querySelector("#cancelpaste")
-  const pasteButton = document.querySelector("#pasteButton")
-
   disposer.register(
-    notify.on("click", showPasteStage, showPasteStageButton),
-    notify.on("click", calc.resetGems, resetGemsButton),
-    notify.on("click", hidePasteStage, cancelPasteButton),
-    notify.on("click", paste, pasteButton),
-    notify.on("click", hidePasteStage, pasteButton),
+    notify.on("click", evt => showPasteStage(evt), showPasteStageButton),
+    notify.on("click", evt => calc.resetGems(evt), resetGemsButton),
   )
 
   createTable()
 }, document))
 
 function showPasteStage() {
-  const paste = document.querySelectorAll("[paste]")
-  paste.forEach(element => element.classList.toggle("hidden"))
+  if(activeDialog)
+    return
+
+  lastTrigger = document.activeElement
+
+  const template = document.querySelector("#pasteDialogTemplate")
+  const fragment = template.content.cloneNode(true)
+  const pasteDialog = fragment.querySelector("#pasteDialog")
+  const pasteBox = fragment.querySelector("#pasteBox")
+  const pasteButton = fragment.querySelector("#pasteButton")
+  const cancelPasteButton = fragment.querySelector("#cancelpaste")
+
+  const handleTrap = event => {
+    if(event.key !== "Tab")
+      return
+
+    const focusables = pasteDialog.querySelectorAll(
+      "button, textarea, [href], input, select, [tabindex]:not([tabindex='-1'])"
+    )
+    const focusArray = Array.from(focusables)
+      .filter(el => !el.disabled && el.tabIndex !== -1)
+
+    if(focusArray.length === 0)
+      return
+
+    const first = focusArray[0]
+    const last = focusArray[focusArray.length - 1]
+
+    if(event.shiftKey && document.activeElement === first) {
+      event.preventDefault()
+      last.focus()
+    } else if(!event.shiftKey && document.activeElement === last) {
+      event.preventDefault()
+      first.focus()
+    }
+  }
+
+  dialogDisposer.dispose()
+
+  dialogDisposer.register(
+    notify.on("click", () => paste(pasteDialog, pasteBox), pasteButton),
+    notify.on("click", () => hidePasteStage(pasteDialog, pasteBox), cancelPasteButton),
+    notify.on("cancel", event => {
+      event.preventDefault()
+      hidePasteStage(pasteDialog, pasteBox)
+    }, pasteDialog),
+    notify.on("close", () => cleanupDialog(pasteDialog), pasteDialog),
+    notify.on("keydown", handleTrap, pasteDialog)
+  )
+
+  document.body.appendChild(pasteDialog)
+  activeDialog = pasteDialog
+
+  pasteDialog.showModal()
+  requestAnimationFrame(() => pasteDialog.classList.add("is-open"))
   pasteBox.focus()
 }
 
-function hidePasteStage() {
-  const paste = document.querySelectorAll("[paste]")
-  paste.forEach(element => element.classList.toggle("hidden"))
+function hidePasteStage(pasteDialog, pasteBox) {
   pasteBox.blur()
+  pasteDialog.classList.remove("is-open")
+
+  const finishClose = () => {
+    pasteDialog.removeEventListener("transitionend", finishClose)
+    if(pasteDialog.open)
+      pasteDialog.close()
+  }
+
+  pasteDialog.addEventListener("transitionend", finishClose)
+  setTimeout(finishClose, 250) // Fallback in case transitionend doesn't fire
 }
 
-function paste() {
+function cleanupDialog(pasteDialog) {
+  dialogDisposer.dispose()
+  pasteDialog.remove()
+  activeDialog = null
+  if(lastTrigger instanceof HTMLElement)
+    lastTrigger.focus()
+}
+
+function paste(pasteDialog, pasteBox) {
   const debugStage = document.querySelector("#debugStage")
-  const pasteBox = document.querySelector("#pasteBox")
   const lines = pasteBox.value.split("\n")
 
   pasteBox.value = ""  // Clear the textarea
 
-  // hidePasteStage()
+  hidePasteStage(pasteDialog, pasteBox)
 
   const {qualities,types} = gems
   const qualityRegex = qualities.join("|")
@@ -111,6 +174,7 @@ function generateOptions(num) {
   ].forEach(([select,opts]) => {
     const element = root.querySelector(`.${select}-select`)
     element.name = `${select}-select-${num}`
+    element.setAttribute("aria-label", `Bloodjewel ${num} ${select}`)
 
     opts.forEach(el => {
       const opt = document.createElement("option")

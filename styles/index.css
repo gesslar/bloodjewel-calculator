@@ -18,7 +18,8 @@
 
   --border-color-primary: var(--color-orange);
 
-  --transition-time: 600s;
+  --transition-time: 0.2;
+  /* --transition-time: 600s; */
   --transition-kind: ease-in-out;
   --transition-standard: var(--transition-kind) var(--transition-time)
 }
@@ -30,15 +31,17 @@ body {
   user-select: none;
 
   main {
-    width: 50%;
+    width: clamp(50vw, 80vw, 1100px);
+    max-width: 1100px;
+    min-width: 340px;
     margin: 0 auto;
+    box-sizing: border-box;
     transition: border-radius var(--transition-standard), box-shadow var(--transition-standard);
     border-radius: 2rem;
     border: none;
     /* box-shadow: 0px 0px 3px var(--border-color-primary) inset, 0px 0px 3px var(--border-color-primary); */
     box-shadow: 0px 0px 25px 0px black inset;
     padding: 2em;
-    max-width: 50%;
 
     [paste].hidden {
       display: none;
@@ -50,9 +53,50 @@ body {
       margin-bottom: 0.5rem;
     }
 
+    .content-columns {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 1.25rem;
+      align-items: start;
+      margin-top: 1.5rem;
+    }
+
+    &.with-output {
+      width: clamp(70vw, 90vw, 1100px);
+    }
+
+    &.with-output .content-columns {
+      grid-template-columns: minmax(0, 1fr) auto;
+      gap: 1.75rem;
+    }
+
+    .primary-column {
+      width: 100%;
+    }
+
+    #outputStage {
+      display: flex;
+      flex-direction: column;
+      align-items: stretch;
+      justify-content: flex-start;
+      padding: 0;
+      margin-top: 0;
+      position: static;
+      min-width: 0;
+      width: fit-content;
+      max-width: 300px;
+      justify-self: end;
+      align-self: stretch;
+      padding-right: 0.25rem;
+      height: 100%;
+    }
+
+    #outputStage.is-hidden {
+      display: none;
+    }
+
     #gemStage {
       select {
-        transition: border-color var(--transition-standard);
         border-radius: 1rem;
         border-color: #ffa600;
         box-shadow: 0px 0px 2px var(--border-color-primary) inset
@@ -102,62 +146,97 @@ body {
     width: 10em;
   }
 
-  #pasteStage {
+  #pasteDialog {
+    position: fixed;
+    inset: 10vh auto auto 50%;
+    transform: translate(-50%, -8px) scale(0.995);
+    margin: 0;
+    user-select: none;
+    background: color-mix(in srgb, var(--background-primary) 15%, var(--background-secondary));
+    color: var(--fg-text);
+    border: 2px solid var(--border-color-primary);
+    border-radius: 1rem;
+    padding: 0;
+    max-width: 520px;
+    width: min(92vw, 520px);
+    box-shadow: 0 20px 45px rgba(0, 0, 0, 0.55), 0 0 0 2px var(--background-secondary) inset;
+    opacity: 0;
+    transition: opacity 0.2s ease, transform 0.2s ease;
+  }
+
+  #pasteDialog.is-open {
+    opacity: 1;
+    transform: translate(-50%, 0) scale(1);
+  }
+
+  #pasteDialog::backdrop {
+    background: rgba(0, 0, 0, 0.55);
+    backdrop-filter: blur(3px);
+  }
+
+  #pasteDialog .dialog-body {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    padding: 1.25rem;
+  }
+
+  #pasteDialog .dialog-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 0.75rem;
+  }
+
+  #pasteDialog #pasteBox {
+    box-shadow: 0px 0px 3px var(--border-color-primary) inset, 0px 0px 3px var(--border-color-primary);
+    border-radius: .75rem;
     width: 100%;
-    text-align: center;
+    max-width: 100%;
+    box-sizing: border-box;
+    max-height: 20ch;
+    padding: 0.75rem 1.25rem 0.75rem 0.75rem;
+    border: 1px solid var(--border-color-primary);
+    overflow-y: scroll;
+    overflow-x: hidden;
+    color: var(--fg-text);
+    background-color: var(--background-secondary);
+    font-family: var(--mono-font);
+    font-size: 0.95rem;
+    margin: 0;
+    height: max-content;
+    text-decoration-style: none;
+    scrollbar-width: thin;
+    scrollbar-color: var(--border-color-primary) var(--background-secondary);
+    scrollbar-gutter: stable both-edges;
+    white-space: pre-wrap;
+    outline: none;
+    resize: vertical;
+    min-height: 8rem;
+    user-select: text;
+  }
 
-    #pasteBox {
-      box-shadow: 0px 0px 1px var(--border-color-primary);
-      border: none;
-      display: block;
-      width: 100%;
-      max-height: 20ch;
-      /* padding: 0.75rem 1.25rem 0.75rem 0.75rem; */
-      /* border: 1px solid var(--border-color-primary); */
-      overflow-y: scroll;
-      color: var(--fg-text);
-      background-color: var(--background-secondary);
-      font-family: var(--mono-font);
-      font-size: 0.95rem;
-      margin-bottom: 1rem;
-      height: max-content;
-      text-decoration-style: none;
-      scrollbar-width: thin;
-      scrollbar-color: var(--border-color-primary) var(--background-secondary);
-      scrollbar-gutter: stable both-edges;
-      white-space: pre-wrap;
-      outline: none;
-      /* box-shadow: 0px 0px 3px var(--border-color-primary) inset, 0px 0px 3px var(--border-color-primary); */
-      /* border-radius: .5rem; */
-    }
+  #pasteDialog #pasteBox:focus {
+    box-shadow: 0px 0px 6px var(--border-color-primary) inset, 0px 0px 6px var(--border-color-primary);
+  }
 
-    #pasteBox:focus {
-      box-shadow: 0px 0px 6px var(--border-color-primary) inset, 0px 0px 6px var(--border-color-primary);
-    }
+  #pasteDialog #pasteBox::-webkit-scrollbar {
+    width: 0.6rem;
+  }
 
-    /*
-    #pasteBox::-webkit-scrollbar {
-      width: 0.6rem;
-    }
-*/
-    /* #pasteBox::-webkit-scrollbar-track {
-      background: var(--background-secondary);
-      border-radius: .5rem;
-      margin: 0.25rem;
-    }
-     */
-    /*
-    #pasteBox::-webkit-scrollbar-thumb {
-      background: var(--border-color-primary);
-      border-radius: .5rem;
-      border: 3px solid var(--background-secondary);
-    }
-       */
-    /*
-    #pasteBox::-webkit-scrollbar-thumb:hover {
-      background: #ffbe33;
-    }
-      */
+  #pasteDialog #pasteBox::-webkit-scrollbar-track {
+    background: var(--background-secondary);
+    border-radius: .75rem;
+    margin: 0.25rem;
+  }
+
+  #pasteDialog #pasteBox::-webkit-scrollbar-thumb {
+    background: var(--border-color-primary);
+    border-radius: .75rem;
+    border: 3px solid var(--background-secondary);
+  }
+
+  #pasteDialog #pasteBox::-webkit-scrollbar-thumb:hover {
+    background: #ffbe33;
   }
 
 
@@ -178,18 +257,19 @@ body {
   }
 
   .flex-container {
-    display: flex;
-    flex-wrap: wrap;
-    /* justify-content: flex-start; */
-    justify-content: center;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
     gap: 20px;
+    width: 100%;
+    max-width: calc(4 * 200px + 3 * 20px);
+    margin: 0 auto;
   }
 
   .gem-group {
     display: flex;
     flex-direction: column;
     align-items: center;
-    width: 150px;
+    width: 100%;
   }
 
   .label {
@@ -200,12 +280,116 @@ body {
 
   .select {
     width: 100%;
+    max-width: 210px;
     cursor: pointer;
   }
 
   #outputStage {
-    display: flexbox;
-    padding: 1rem;
-    margin-top: 1rem;
+      .effects-panel {
+        width: auto;
+        min-width: 240px;
+        /* background: var(--background-secondary); */
+        /* border: 1px solid rgba(255, 166, 0, 0.45); */
+        border-radius: 1rem;
+        padding: 1.1rem 1.3rem;
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.28);
+        gap: 0.4rem;
+        border-left: 4px solid rgba(255, 166, 0, 0.1);
+      }
+
+      .effects-title {
+        font-weight: 800;
+        letter-spacing: 0.02em;
+        text-transform: uppercase;
+        color: var(--color-orange);
+        margin-bottom: 0.4rem;
+        text-align: center;
+        display: none;
+      }
+
+    .effects-list {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 0.65rem;
+    }
+
+    .effect-item {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      background: var(--background-color);
+      border: 1px solid rgba(255, 166, 0, 0.32);
+      border-radius: 0.65rem;
+      padding: 0.55rem 0.8rem;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+      gap: 0.5rem;
+      position: relative;
+      overflow: hidden;
+      column-gap: 0.75rem;
+    }
+
+    .effect-item::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      border-left: 3px solid rgba(255, 166, 0, 0.8);
+      opacity: 0.85;
+      pointer-events: none;
+    }
+
+    .effect-name {
+      color: var(--color-orange);
+      font-weight: 700;
+      font-size: 0.95rem;
+    }
+
+    .effect-value {
+      color: var(--fg-text);
+      font-weight: 600;
+      font-size: 0.95rem;
+      border-radius: 999px;
+      padding: 0.25rem 0.7rem;
+      border: 1px solid rgba(255, 166, 0, 0.35);
+      min-width: 3.5rem;
+      text-align: center;
+    }
+
+    .effects-empty {
+      text-align: center;
+      color: var(--fg-text);
+      font-style: italic;
+      opacity: 0.8;
+    }
+  }
+}
+
+@media (max-width: 960px) {
+  body {
+    main {
+      width: 92vw;
+
+      .content-columns {
+        grid-template-columns: 1fr;
+      }
+
+      &.with-output .content-columns {
+        grid-template-columns: 1fr;
+      }
+
+      &.with-output {
+        width: 92vw;
+      }
+
+      #outputStage {
+        position: static;
+        margin-top: 1rem;
+
+        .effects-list {
+          grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        }
+      }
+    }
   }
 }
