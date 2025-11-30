@@ -18,7 +18,7 @@
 
   --border-color-primary: var(--color-orange);
 
-  --transition-time: 0.2;
+  --transition-time: 1s;
   /* --transition-time: 600s; */
   --transition-kind: ease-in-out;
   --transition-standard: var(--transition-kind) var(--transition-time)
@@ -29,6 +29,35 @@ body {
   color: var(--fg-text);
   font-family: var(--base-font);
   user-select: none;
+
+  header {
+    text-align: center;
+    margin: 1.5rem 0 1rem;
+  }
+
+  .title-blur {
+    position: relative;
+    display: inline-block;
+    font-weight: 800;
+    letter-spacing: 0.02em;
+    font-size: clamp(2.4rem, 3vw + 1rem, 3.8rem);
+    color: var(--color-orange);
+    text-shadow:
+      0 0 3px rgba(255, 166, 0, 0.45),
+      0 0 5px rgba(255, 166, 0, 0.35),
+      0 0 7px rgba(255, 166, 0, 0.2);
+  }
+
+  .title-blur::after {
+    content: attr(data-text);
+    position: absolute;
+    inset: 0;
+    color: var(--color-orange);
+    filter: blur(10px);
+    opacity: 0.55;
+    pointer-events: none;
+    z-index: -1;
+  }
 
   main {
     width: clamp(50vw, 80vw, 1100px);
@@ -41,7 +70,7 @@ body {
     border: none;
     /* box-shadow: 0px 0px 3px var(--border-color-primary) inset, 0px 0px 3px var(--border-color-primary); */
     box-shadow: 0px 0px 25px 0px black inset;
-    padding: 2em;
+    padding: 2em 2em 3em 2em;
 
     [paste].hidden {
       display: none;
@@ -97,6 +126,8 @@ body {
 
     #gemStage {
       select {
+        margin: .05rem;
+        font-size: 1.2rem;
         border-radius: 1rem;
         border-color: #ffa600;
         box-shadow: 0px 0px 2px var(--border-color-primary) inset
@@ -125,7 +156,7 @@ body {
     .label {
       color: var(--color-orange);
       font-weight: normal;
-      font-size: .9em;
+      font-size: 1.2rem;
     }
   }
 
@@ -285,27 +316,27 @@ body {
   }
 
   #outputStage {
-      .effects-panel {
-        width: auto;
-        min-width: 240px;
-        /* background: var(--background-secondary); */
-        /* border: 1px solid rgba(255, 166, 0, 0.45); */
-        border-radius: 1rem;
-        padding: 1.1rem 1.3rem;
-        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.28);
-        gap: 0.4rem;
-        border-left: 4px solid rgba(255, 166, 0, 0.1);
-      }
+    .effects-panel {
+      width: auto;
+      min-width: 240px;
+      /* background: var(--background-secondary); */
+      /* border: 1px solid rgba(255, 166, 0, 0.45); */
+      border-radius: 1rem;
+      padding: 1.1rem 1.3rem;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.28);
+      gap: 0.4rem;
+      border-left: 4px solid rgba(255, 166, 0, 0.1);
+    }
 
-      .effects-title {
-        font-weight: 800;
-        letter-spacing: 0.02em;
-        text-transform: uppercase;
-        color: var(--color-orange);
-        margin-bottom: 0.4rem;
-        text-align: center;
-        display: none;
-      }
+    .effects-title {
+      font-weight: 800;
+      letter-spacing: 0.02em;
+      text-transform: uppercase;
+      color: var(--color-orange);
+      margin-bottom: 0.4rem;
+      text-align: center;
+      display: none;
+    }
 
     .effects-list {
       list-style: none;
